@@ -291,7 +291,19 @@ install_virtualbox() {
 
 install_ghex()       { sudo apt -y install ghex; }
 install_audacity()   { sudo apt -y install audacity; }
-install_winetricks() { sudo apt -y install winetricks; }
+
+# Winetricks: latest release script from GitHub. The Debian package lives in
+# "contrib", which many installs don't enable, and lags behind upstream.
+install_winetricks() {
+  sudo apt -y install curl wget binutils cabextract unzip p7zip-full xz-utils zenity
+  local tag
+  tag=$(curl -fsSL https://api.github.com/repos/Winetricks/winetricks/releases/latest \
+        | grep -o '"tag_name": *"[^"]*"' | cut -d'"' -f4)
+  [[ -n $tag ]] || { echo "Winetricks: could not find the latest release"; return 1; }
+  sudo curl -fL -o /usr/local/bin/winetricks \
+    "https://raw.githubusercontent.com/Winetricks/winetricks/$tag/src/winetricks" || return 1
+  sudo chmod +x /usr/local/bin/winetricks
+}
 
 if has_gui; then
   source ./show/divbar

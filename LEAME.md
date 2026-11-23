@@ -45,7 +45,8 @@ Instala el entorno en Debian 13 (probado también en Ubuntu 22).
 - En equipos con entorno gráfico, muestra una lista de aplicaciones opcionales para elegir (las ya instaladas aparecen marcadas). Solo paquetes de Debian, repositorios oficiales gratuitos o compilación desde GitHub:
   - **Ghostty**: se compila al instalar desde el tarball oficial de la última versión (según los tags de GitHub), con la versión de Zig que ese tag exige (desde ziglang.org), y se instala en `/usr/local`
   - **Wayscriber**: repositorio oficial (wayscriber.com)
-  - **GHex**, **Audacity**, **Winetricks**: repositorios de Debian
+  - **GHex**, **Audacity**: repositorios de Debian
+  - **Winetricks**: script del último release de GitHub en `/usr/local/bin/winetricks` (el paquete de Debian está en `contrib`, que muchas veces no está activado)
   - **Ghidra**: último release de GitHub en `/opt/ghidra` (instala OpenJDK 25)
   - **86Box**: último AppImage de GitHub en `/usr/local/bin/86Box`, más el set de ROMs en `~/.local/share/86Box/roms`
   - **VirtualBox**: repositorio oficial de Oracle (último `virtualbox-X.Y`, clave de firma verificada por huella), agrega el usuario a `vboxusers` y configura `kvm enable_virt_at_load=0` para que KVM no bloquee AMD-V/VT-x en el kernel 6.12+
