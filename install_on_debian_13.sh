@@ -237,9 +237,10 @@ DESKTOP
 # 86Box: latest AppImage from GitHub + ROM set
 install_86box() {
   sudo apt -y install libfuse2t64 curl git
-  local url
-  url=$(curl -fsSL https://api.github.com/repos/86Box/86Box/releases/latest \
-        | grep -o '"browser_download_url": *"[^"]*-Linux-x86_64-[^"]*\.AppImage"' | cut -d'"' -f4 | head -1)
+  local release url tag size
+  release=$(curl -fsSL https://api.github.com/repos/86Box/86Box/releases/latest)
+  url=$(grep -o '"browser_download_url": *"[^"]*-Linux-x86_64-[^"]*\.AppImage"' <<< "$release" | cut -d'"' -f4 | head -1)
+  tag=$(grep -o '"tag_name": *"[^"]*"' <<< "$release" | cut -d'"' -f4)
   [[ -n $url ]] || { echo "86Box: could not find the latest release"; return 1; }
   sudo curl -fL -o /usr/local/bin/86Box "$url"
   sudo chmod +x /usr/local/bin/86Box
@@ -248,11 +249,24 @@ install_86box() {
     mkdir -p ~/.local/share/86Box
     git clone --depth 1 https://github.com/86Box/roms.git ~/.local/share/86Box/roms
   fi
+  # Official icons from the same release, in every size the project ships
+  for size in 16 20 24 32 40 48 64 72 128 256; do
+    mkdir -p ~/.local/share/icons/hicolor/${size}x${size}/apps
+    curl -fsSL -o ~/.local/share/icons/hicolor/${size}x${size}/apps/net.86box.86Box.png \
+      "https://raw.githubusercontent.com/86Box/86Box/$tag/src/unix/assets/${size}x${size}/net.86box.86Box.png" \
+      || echo "86Box: could not download the ${size}px icon"
+  done
+  # Named like the app ID so the dock shows the icon on the running window too
   mkdir -p ~/.local/share/applications
-  cat > ~/.local/share/applications/86box.desktop <<'DESKTOP'
+  rm -f ~/.local/share/applications/86box.desktop
+  cat > ~/.local/share/applications/net.86box.86Box.desktop <<'DESKTOP'
 [Desktop Entry]
 Name=86Box
+GenericName=Classic PC emulator
+Comment=An emulator for classic IBM PC clones
 Exec=/usr/local/bin/86Box
+Icon=net.86box.86Box
+Terminal=false
 Type=Application
 Categories=System;Emulator;
 DESKTOP

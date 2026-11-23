@@ -50,7 +50,7 @@ Installs the environment on Debian 13 (also tested on Ubuntu 22).
   - **GHex**, **Audacity**: Debian repositories
   - **Winetricks**: latest GitHub release script in `/usr/local/bin/winetricks` (the Debian package is in `contrib`, often not enabled)
   - **Ghidra**: latest GitHub release in `/opt/ghidra` (installs OpenJDK 25)
-  - **86Box**: latest GitHub AppImage in `/usr/local/bin/86Box`, plus the ROM set in `~/.local/share/86Box/roms`
+  - **86Box**: latest GitHub AppImage in `/usr/local/bin/86Box`, plus the ROM set in `~/.local/share/86Box/roms` and the official icons from the same release
   - **VirtualBox**: Oracle's official repository (newest `virtualbox-X.Y`, signing key checked by fingerprint), adds the user to `vboxusers` and sets `kvm enable_virt_at_load=0` so KVM doesn't block AMD-V/VT-x on kernel 6.12+
   - **Wine**: WineHQ staging (official repository, enables i386)
 
