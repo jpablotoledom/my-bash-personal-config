@@ -4,7 +4,7 @@
 
 Personal terminal environment setup: shell, editor, fonts and tools, deployable on Debian and macOS.
 
-![alt Terminal colors](https://raw.githubusercontent.com/pablotoledom/my-bash-personal-config/main/images/screenshot.png)
+![alt Terminal colors](https://raw.githubusercontent.com/jpablotoledom/my-bash-personal-config/main/images/screenshot.png)
 
 ## What it installs
 

@@ -2,7 +2,7 @@
 
 Configuración personal de entorno de terminal: shell, editor, fuentes y herramientas, desplegable en Debian y macOS.
 
-![alt Terminal colors](https://raw.githubusercontent.com/pablotoledom/my-bash-personal-config/main/images/screenshot.png)
+![alt Terminal colors](https://raw.githubusercontent.com/jpablotoledom/my-bash-personal-config/main/images/screenshot.png)
 
 ## Qué instala
 
