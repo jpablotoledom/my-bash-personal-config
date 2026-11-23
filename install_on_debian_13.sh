@@ -66,7 +66,8 @@ source ./show/divbar
 echo '3- Installing OH MY BASH...'
 sleep .5
 
-bash -c "$(wget https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh -O -)"
+# --unattended: don't start a new Bash session at the end (it paused the installer until "exit")
+bash -c "$(wget https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh -O -)" --unattended
 
 # *************************************************************** #
 #                  4- Install RUNCOM files                        #
@@ -213,12 +214,21 @@ install_ghidra() {
   # /opt/ghidra always points to the newest extracted version
   sudo ln -sfn "$(ls -d /opt/ghidra_*_PUBLIC | sort -V | tail -1)" /opt/ghidra
   sudo ln -sf /opt/ghidra/ghidraRun /usr/local/bin/ghidra
-  sudo tee /usr/share/applications/ghidra.desktop > /dev/null <<'DESKTOP'
+  # GNOME renders support/ghidra.ico as noise: use the 256px PNG bundled in Gui.jar
+  local png=/usr/share/icons/hicolor/256x256/apps/ghidra.png icon=/opt/ghidra/support/ghidra.ico
+  sudo mkdir -p "${png%/*}"
+  if unzip -p /opt/ghidra/Ghidra/Framework/Gui/lib/Gui.jar images/GhidraIcon256.png 2>/dev/null \
+       | sudo tee "$png" > /dev/null && [[ -s $png ]]; then
+    icon=$png
+  else
+    sudo rm -f "$png"
+  fi
+  sudo tee /usr/share/applications/ghidra.desktop > /dev/null <<DESKTOP
 [Desktop Entry]
 Name=Ghidra
 Comment=Software reverse engineering framework
 Exec=/opt/ghidra/ghidraRun
-Icon=/opt/ghidra/support/ghidra.ico
+Icon=$icon
 Type=Application
 Categories=Development;
 DESKTOP
@@ -352,3 +362,5 @@ if has_gui; then
 else
   echo 'No graphical environment detected: skipping optional GUI applications.'
 fi
+
+source ./show/finished

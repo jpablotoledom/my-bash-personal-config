@@ -119,7 +119,8 @@ Installs the environment on macOS 14+ (Apple Silicon and Intel) **without intern
 ├── thirdparty/macos/             # Offline bundles for macOS
 └── show/
     ├── welcome                   # Welcome banner
-    └── divbar                    # Section divider
+    ├── divbar                    # Section divider
+    └── finished                  # "All done" banner shown at the end
 ```
 
 ## Author

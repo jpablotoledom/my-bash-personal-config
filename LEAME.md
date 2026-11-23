@@ -117,7 +117,8 @@ Instala el entorno en macOS 14+ (Apple Silicon e Intel) **sin acceso a internet*
 ├── thirdparty/macos/             # Bundles offline para macOS
 └── show/
     ├── welcome                   # Banner de bienvenida
-    └── divbar                    # Separador de secciones
+    ├── divbar                    # Separador de secciones
+    └── finished                  # Banner "All done" que se muestra al terminar
 ```
 
 ## Author
