@@ -39,6 +39,17 @@ Instala el entorno en Debian 13 (probado también en Ubuntu 22).
 - Instala ble.sh clonando desde GitHub y compilando
 - Instala Oh My Bash desde GitHub
 - Copia `copy_to_user_folder/.bashrc_debian` como `~/.bashrc`
+- Copia `.blerc` (opciones de ble.sh), la configuración de Ghostty (`~/.config/ghostty/config.ghostty`) y la de WirePlumber (volumen inicial de 50% para salidas analógicas nuevas)
+- Aplica una corrección a la regla udev de `alsa-utils` 1.2.14: al conectar cualquier tarjeta de sonido (p. ej. una webcam USB detrás de un switch KVM) se reseteaba el volumen de los parlantes. La regla corregida se instala en `/etc/udev/rules.d/` solo mientras la regla del paquete siga con el bug
+
+- En equipos con entorno gráfico, muestra una lista de aplicaciones opcionales para elegir (las ya instaladas aparecen marcadas). Solo paquetes de Debian, repositorios oficiales gratuitos o compilación desde GitHub:
+  - **Ghostty**: se compila al instalar desde el tarball oficial de la última versión (según los tags de GitHub), con la versión de Zig que ese tag exige (desde ziglang.org), y se instala en `/usr/local`
+  - **Wayscriber**: repositorio oficial (wayscriber.com)
+  - **GHex**, **Audacity**, **Winetricks**: repositorios de Debian
+  - **Ghidra**: último release de GitHub en `/opt/ghidra` (instala OpenJDK 25)
+  - **86Box**: último AppImage de GitHub en `/usr/local/bin/86Box`, más el set de ROMs en `~/.local/share/86Box/roms`
+  - **VirtualBox**: repositorio oficial de Oracle (último `virtualbox-X.Y`, clave de firma verificada por huella), agrega el usuario a `vboxusers` y configura `kvm enable_virt_at_load=0` para que KVM no bloquee AMD-V/VT-x en el kernel 6.12+
+  - **Wine**: WineHQ staging (repositorio oficial, habilita i386)
 
 **Requisitos:** acceso a internet, permisos `sudo`.
 
@@ -87,11 +98,16 @@ Instala el entorno en macOS 14+ (Apple Silicon e Intel) **sin acceso a internet*
 │   ├── .bashrc_debian            # Configuración de shell para Debian/Ubuntu
 │   ├── .bashrc_macos             # Configuración de shell para macOS
 │   ├── .vimrc                    # Configuración de Vim
+│   ├── .blerc                    # Opciones de ble.sh
 │   ├── .vim/
 │   │   ├── plugins.vim           # Lista de plugins de vim-plug
 │   │   └── plugged.tar.gz        # Plugins preempaquetados (uso offline)
-│   └── .config/nvim/
-│       └── init.vim              # Configuración de inicio de Neovim
+│   └── .config/
+│       ├── nvim/init.vim         # Configuración de inicio de Neovim
+│       ├── ghostty/config.ghostty # Configuración de Ghostty (shell integration desactivada)
+│       └── wireplumber/wireplumber.conf.d/50-volume.conf # Volumen inicial de salidas analógicas
+├── system/debian/udev/
+│   └── 90-alsa-restore.rules     # Regla de alsa-utils corregida (reseteo de volumen al conectar audio USB)
 ├── fonts/
 │   ├── hack/                     # Hack Nerd Font
 │   ├── meslolgs/                 # MesloLGS NF

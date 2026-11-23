@@ -41,6 +41,17 @@ Installs the environment on Debian 13 (also tested on Ubuntu 22).
 - Installs ble.sh by cloning from GitHub and building
 - Installs Oh My Bash from GitHub
 - Copies `copy_to_user_folder/.bashrc_debian` as `~/.bashrc`
+- Copies `.blerc` (ble.sh options), the Ghostty config (`~/.config/ghostty/config.ghostty`) and the WirePlumber config (50% initial volume for new analog outputs)
+- Applies a fix for the `alsa-utils` 1.2.14 udev rule: hotplugging any sound card (e.g. a USB webcam behind a KVM switch) reset the speaker volume. The fixed rule is installed to `/etc/udev/rules.d/` only while the packaged rule still has the bug
+
+- On machines with a graphical environment, shows a checklist of optional apps (already installed ones are marked). Only Debian packages, free official repositories, or builds from GitHub:
+  - **Ghostty**: built at install time from the official source tarball of the latest version (per GitHub tags), with the Zig version that tag requires (from ziglang.org), installed to `/usr/local`
+  - **Wayscriber**: official repository (wayscriber.com)
+  - **GHex**, **Audacity**, **Winetricks**: Debian repositories
+  - **Ghidra**: latest GitHub release in `/opt/ghidra` (installs OpenJDK 25)
+  - **86Box**: latest GitHub AppImage in `/usr/local/bin/86Box`, plus the ROM set in `~/.local/share/86Box/roms`
+  - **VirtualBox**: Oracle's official repository (newest `virtualbox-X.Y`, signing key checked by fingerprint), adds the user to `vboxusers` and sets `kvm enable_virt_at_load=0` so KVM doesn't block AMD-V/VT-x on kernel 6.12+
+  - **Wine**: WineHQ staging (official repository, enables i386)
 
 **Requirements:** internet access, `sudo` privileges.
 
@@ -89,11 +100,16 @@ Installs the environment on macOS 14+ (Apple Silicon and Intel) **without intern
 │   ├── .bashrc_debian            # Shell config for Debian/Ubuntu
 │   ├── .bashrc_macos             # Shell config for macOS
 │   ├── .vimrc                    # Vim config
+│   ├── .blerc                    # ble.sh options
 │   ├── .vim/
 │   │   ├── plugins.vim           # vim-plug plugin list
 │   │   └── plugged.tar.gz        # Pre-bundled plugins (offline use)
-│   └── .config/nvim/
-│       └── init.vim              # Neovim init config
+│   └── .config/
+│       ├── nvim/init.vim         # Neovim init config
+│       ├── ghostty/config.ghostty # Ghostty config (shell integration off)
+│       └── wireplumber/wireplumber.conf.d/50-volume.conf # Initial analog output volume
+├── system/debian/udev/
+│   └── 90-alsa-restore.rules     # Fixed alsa-utils rule (volume reset on USB audio hotplug)
 ├── fonts/
 │   ├── hack/                     # Hack Nerd Font
 │   ├── meslolgs/                 # MesloLGS NF

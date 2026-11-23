@@ -1,0 +1,2 @@
+bleopt prompt_command_changes_layout=1
+bleopt exec_restore_pipestatus=1

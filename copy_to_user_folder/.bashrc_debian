@@ -6,6 +6,9 @@ esac
 
 export PATH="$HOME/.local/bin:$PATH"
 
+# Bash Line Editor (load early, attach at the end of this file)
+[[ -f ~/.local/share/blesh/ble.sh ]] && source -- ~/.local/share/blesh/ble.sh --attach=none
+
 # Path to your oh-my-bash installation.
 export OSH="$HOME/.oh-my-bash"
 
@@ -139,7 +142,7 @@ SCM_THEME_PROMPT_DIRTY_COLOR=214
 SCM_THEME_PROMPT_STAGED_COLOR=118
 SCM_THEME_PROMPT_UNSTAGED_COLOR=166
 SCM_THEME_PROMPT_CONFLICT_COLOR=160
-POWERLINE_PROMPT_CHAR=$'\xe2\x96\x93\xe2\x96\x92\xe2\x96\x91'$'\n\001\033[38;5;46m\002\xe2\x9d\xaf\001\033[0m\002 '
+POWERLINE_PROMPT_CHAR=$'\xe2\x96\x93\xe2\x96\x92\xe2\x96\x91'$'\\n\001\033[38;5;46m\002\xe2\x9d\xaf\001\033[0m\002 '
 
 # OS icon segment for powerline
 function __powerline_os_icon_prompt {
@@ -226,12 +229,12 @@ function __powerline_cwd_prompt {
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+# Preferred terminal editor (git, crontab -e, sudoedit, less 'v', etc.)
+if command -v nvim >/dev/null 2>&1; then
+  export EDITOR='nvim'
+  export VISUAL='nvim'
+  export SUDO_EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -266,7 +269,9 @@ sudo_toggle_bash() {
 }
 
 # 2. Register the keybinding
-bind -x '"\e\e": sudo_toggle_bash'
+if [[ $- == *i* ]]; then
+    bind -x '"\e\e": sudo_toggle_bash'
+fi
 
 # Autocompletation tool Bash Line Editor
-[[ -f ~/.local/share/blesh/ble.sh ]] && source -- ~/.local/share/blesh/ble.sh
+[[ ${BLE_VERSION-} ]] && ble-attach
