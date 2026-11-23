@@ -163,8 +163,14 @@ is_installed() { command -v "$1" >/dev/null 2>&1; }
 install_ghostty() {
   sudo apt -y install curl xz-utils pkg-config gettext libxml2-utils \
     libgtk-4-dev libadwaita-1-dev libgtk4-layer-shell-dev
-  local tmp ver zigver
-  tmp=$(mktemp -d)
+  local tmp ver zigver jobs
+  # /tmp is a RAM-backed tmpfs on Debian 13: build on disk instead, otherwise
+  # Zig, the sources and the build cache fill the RAM and clang gets OOM-killed.
+  tmp=$(mktemp -d -p /var/tmp ghostty-build.XXXXXX)
+  # About 2 GB of RAM per parallel compile job
+  jobs=$(( $(awk '/^MemAvailable/{print $2}' /proc/meminfo) / 2097152 ))
+  (( jobs < 1 )) && jobs=1
+  (( jobs > $(nproc) )) && jobs=$(nproc)
   ver=$(curl -fsSL "https://api.github.com/repos/ghostty-org/ghostty/tags?per_page=20" \
         | grep -o '"name": *"v[0-9]*\.[0-9]*\.[0-9]*"' | cut -d'"' -f4 | sort -V | tail -1)
   ver=${ver#v}
@@ -172,12 +178,12 @@ install_ghostty() {
   curl -fsSL "https://release.files.ghostty.org/$ver/ghostty-$ver.tar.gz" | tar -xz -C "$tmp" \
     || { echo "Ghostty: could not download the $ver source tarball"; rm -rf "$tmp"; return 1; }
   zigver=$(grep -o 'minimum_zig_version *= *"[^"]*"' "$tmp/ghostty-$ver/build.zig.zon" | cut -d'"' -f2)
-  echo "Building Ghostty $ver with Zig $zigver..."
+  echo "Building Ghostty $ver with Zig $zigver ($jobs parallel jobs)..."
   curl -fsSL "https://ziglang.org/download/$zigver/zig-x86_64-linux-$zigver.tar.xz" | tar -xJ -C "$tmp" \
     || { echo "Ghostty: could not download Zig $zigver"; rm -rf "$tmp"; return 1; }
   (
     cd "$tmp/ghostty-$ver" &&
-    DESTDIR="$tmp/stage" "$tmp/zig-x86_64-linux-$zigver/zig" build \
+    DESTDIR="$tmp/stage" "$tmp/zig-x86_64-linux-$zigver/zig" build -j"$jobs" \
       --prefix /usr/local -Doptimize=ReleaseFast -Dversion-string="$ver"
   ) || { echo "Ghostty: build failed (sources kept in $tmp)"; return 1; }
   sudo cp -a "$tmp/stage/usr/local/." /usr/local/
